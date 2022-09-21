@@ -30,7 +30,6 @@ class MyApp extends StatelessWidget {
         registerRoute: (context) => const RegisterView(),
         notesRoute: (context) => const NotesView(),
         verifyRoute: (context) => const VerifyEmailView(),
-        
       },
     );
   }
@@ -83,16 +82,17 @@ class _NotesViewState extends State<NotesView> {
       appBar: AppBar(
         title: const Text('Main UI'),
         actions: [
-          PopupMenuButton<MenuAction>(
-            onSelected: (value) async {
-            switch (value){
+          PopupMenuButton<MenuAction>(onSelected: (value) async {
+            switch (value) {
               case MenuAction.logout:
                 final shouldLogout = await showLogOutDialog(context);
-                if (shouldLogout){
+                if (shouldLogout) {
                   await FirebaseAuth.instance.signOut();
-                  Navigator.of(context).pushNamedAndRemoveUntil(loginRoute, (_) => false,);
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                    loginRoute,
+                    (_) => false,
+                  );
                 }
-
             }
           }, itemBuilder: (context) {
             return const [
@@ -128,4 +128,26 @@ Future<bool> showLogOutDialog(BuildContext context) {
       );
     },
   ).then((value) => value ?? false);
+}
+
+Future<void> shoeErrorDialog(
+  BuildContext context,
+  String text,
+) {
+  return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('An Error Occurred'),
+          content: Text(text),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            )
+          ],
+        );
+      });
 }
